@@ -252,3 +252,5 @@ MIT License - see LICENSE file for details.
 ---
 
 *This project is part of a professional portfolio demonstrating advanced systems engineering capabilities for high-availability infrastructure.*
+
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white)](https://github.com/sponsors/PkLavc)
