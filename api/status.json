@@ -1,0 +1,13 @@
+{
+  "service": "backend-sim",
+  "project": "aegis-sentinel",
+  "status": "ok",
+  "source": "github-actions",
+  "lastUpdated": "pending-first-workflow-run",
+  "runId": "manual",
+  "metrics": {
+    "latencyMs": 142,
+    "successRate": 99.1,
+    "eventsProcessed": 1840
+  }
+}
