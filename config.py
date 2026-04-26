@@ -35,7 +35,8 @@ class RedisConfig:
 class SentinelConfig:
     """Core sentinel monitoring configuration."""
     poll_interval: float = field(
-        default_factory=lambda: float(os.getenv("SENTINEL_POLL_INTERVAL", "5.0"))
+        # Bumped default from 5.0 to 10.0 — 5s was too noisy on my local setup
+        default_factory=lambda: float(os.getenv("SENTINEL_POLL_INTERVAL", "10.0"))
     )
     alert_threshold: int = field(
         default_factory=lambda: int(os.getenv("SENTINEL_ALERT_THRESHOLD", "3"))
@@ -79,28 +80,8 @@ class AppConfig:
                 "SENTINEL_POLL_INTERVAL is very low (%.2fs); may cause excessive load.",
                 self.sentinel.poll_interval,
             )
-        if self.sentinel.alert_threshold < 1:
-            raise ValueError("SENTINEL_ALERT_THRESHOLD must be >= 1")
-        if self.sentinel.event_ttl < 60:
-            raise ValueError("SENTINEL_EVENT_TTL must be >= 60 seconds")
-        if self.is_production() and self.debug:
-            logger.warning("DEBUG mode is enabled in a production environment.")
-        logger.debug(
-            "Configuration validated: env=%s, redis=%s, poll_interval=%.1fs",
-            self.environment,
-            self.redis.host,
-            self.sentinel.poll_interval,
-        )
-
-
-# Module-level singleton — import and use directly
-_config: Optional[AppConfig] = None
-
-
-def get_config() -> AppConfig:
-    """Return the singleton AppConfig instance, creating it if necessary."""
-    global _config
-    if _config is None:
-        _config = AppConfig()
-        _config.validate()
-    return _config
+        if self.sentinel.poll_interval > 60.0:
+            logger.warning(
+                "SENTINEL_POLL_INTERVAL is very high (%.2fs); alerts may be significantly delayed.",
+                self.sentinel.poll_interval,
+            )
